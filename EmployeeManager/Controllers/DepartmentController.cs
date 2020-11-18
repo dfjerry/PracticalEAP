@@ -4,14 +4,13 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using EmployeeManager.Models;
-
-namespace EmployeeConsumer.Controllers
+namespace EmployeeManager.Controllers
 {
 
-    public class DepartmentController : Controller
+    public class DeparmentController : Controller
     {
-        EmployeeManager  servicesClient = new EmployeeManager();
-        // GET: Department
+        ServiceClient serviceClient = new ServiceClient();
+        // GET: Deparment
         public ViewResult Index(string sortOrder, string search, string currentFilter, int? page)
         {
             ViewBag.CurrentSort = sortOrder;
@@ -27,7 +26,7 @@ namespace EmployeeConsumer.Controllers
                 search = currentFilter; //  nếu có thì render phần dữ liệu search ra
             }
             ViewBag.CurrentFilter = search;
-            var departments = from s in servicesClient.getAllDepartment() select s;
+            var departments = from s in serviceClient.GetDepartments() select s;
             if (!String.IsNullOrEmpty(search)) // check nếu search string có thì in ra hoặc không thì không in ra
             {
                 departments = departments.Where(s => s.DepartmentName.Contains(search) || s.DepartmentName.Contains(search)); // contains là để check xem lastname hoặc firstName có chứa search string ở trên 
@@ -46,11 +45,10 @@ namespace EmployeeConsumer.Controllers
             return View(departments.ToList());
 
         }
-
-        // GET: Department/Details/5
+        // GET: Deparment/Details/5
         public ActionResult Details(int id)
         {
-            var department = servicesClient.getAllDepartment().Where(b => b.DepartmentID == id).FirstOrDefault();
+            var department = serviceClient.GetDepartments().Where(b => b.DepartmentID == id).FirstOrDefault();
             return View(department);
 
         }
@@ -70,7 +68,7 @@ namespace EmployeeConsumer.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    servicesClient.AddDepartment(newDepartment);
+                    serviceClient.AddDepartment(newDepartment);
                     return RedirectToAction("Index", "Department");
                 }
 
@@ -83,6 +81,7 @@ namespace EmployeeConsumer.Controllers
                 return View();
             }
         }
+
 
         // GET: Department/Edit/5
         public ActionResult Edit(int id)
